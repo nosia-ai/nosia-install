@@ -5,6 +5,6 @@ if ! [ -x "$(command -v git)" ]; then
 fi
 
 git clone git@github.com:nosia-ai/nosia.git
-cd ./ia/
-OLLAMA_CHAT_COMPLETION_MODEL=$OLLAMA_CHAT_COMPLETION_MODEL OLLAMA_COMPLETION_MODEL=$OLLAMA_COMPLETION_MODEL OLLAMA_URL=$OLLAMA_URL RAILS_MASTER_KEY=$RAILS_MASTER_KEY ./script/production/setup
+cd ./nosia/
+OLLAMA_CHAT_COMPLETION_MODEL=$OLLAMA_CHAT_COMPLETION_MODEL OLLAMA_COMPLETION_MODEL=$OLLAMA_COMPLETION_MODEL OLLAMA_URL=$OLLAMA_URL ./script/production/setup
  ./script/production/start
