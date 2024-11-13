@@ -6,5 +6,5 @@ fi
 
 git clone https://github.com/nosia-ai/nosia.git
 cd ./nosia/
-OLLAMA_CHAT_COMPLETION_MODEL=$OLLAMA_CHAT_COMPLETION_MODEL OLLAMA_COMPLETION_MODEL=$OLLAMA_COMPLETION_MODEL OLLAMA_URL=$OLLAMA_URL ./script/production/setup
+OLLAMA_BASE_URL=$OLLAMA_BASE_URL LLM_MODEL=$LLM_MODEL EMBEDDING_MODEL=$EMBEDDING_MODEL CHECK_MODEL=$CHECK_MODEL ./script/production/setup
  ./script/production/start
