@@ -13,7 +13,7 @@ if ! [ -n "$OLLAMA_BASE_URL" ]; then
 fi
 
 if ! [ -n "$LLM_MODEL" ]; then
-  LLM_MODEL=qwen2.5
+  LLM_MODEL=mistral-small3.2
 fi
 
 OLLAMA_BASE_URL=$OLLAMA_BASE_URL LLM_MODEL=$LLM_MODEL ./script/setup
