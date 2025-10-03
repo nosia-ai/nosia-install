@@ -8,14 +8,14 @@ git clone https://github.com/nosia-ai/nosia.git
 
 cd ./nosia/
 
-if ! [ -n "$OLLAMA_BASE_URL" ]; then
-  OLLAMA_BASE_URL=http://localhost:11434
+if ! [ -n "$AI_API_BASE" ]; then
+  AI_API_BASE=http://localhost:11434/v1
 fi
 
 if ! [ -n "$LLM_MODEL" ]; then
-  LLM_MODEL=granite3.3:2b
+  LLM_MODEL=granite4:micro-h
 fi
 
-OLLAMA_BASE_URL=$OLLAMA_BASE_URL LLM_MODEL=$LLM_MODEL ./script/setup
+AI_API_BASE=$AI_API_BASE LLM_MODEL=$LLM_MODEL ./script/setup
 
 ./script/start
