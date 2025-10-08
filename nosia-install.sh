@@ -2,7 +2,7 @@
 
 pull() {
   echo "Pulling latest docker-compose.yml"
-  curl -fsSL https://raw.githubusercontent.com/nosia/nosia-install/HEAD/docker-compose.yml
+  curl -fsSL https://raw.githubusercontent.com/nosia-ai/nosia-install/refs/heads/main/docker-compose.yml
 
   echo "Pulling latest Nosia"
   docker compose pull
