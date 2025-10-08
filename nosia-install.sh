@@ -1,6 +1,9 @@
 #!/bin/bash -e
 
 pull() {
+  echo "Pulling latest docker-compose.yml"
+  curl -fsSL https://raw.githubusercontent.com/nosia/nosia-install/HEAD/docker-compose.yml
+
   echo "Pulling latest Nosia"
   docker compose pull
 }
@@ -131,13 +134,13 @@ setup_macos() {
   # Install brew if not installed
   if ! command -v brew &>/dev/null; then
     echo "Installing Homebrew"
-    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | sh &>./log/production.log
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | sh
   fi
 
   # Install openssl if not installed
   if ! brew list openssl &>/dev/null; then
     echo "Installing OpenSSL"
-    brew install openssl &>./log/production.log
+    brew install openssl
   fi
 
   # Install Docker Desktop if not installed

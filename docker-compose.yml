@@ -1,0 +1,114 @@
+services:
+  reverse-proxy:
+    image: caddy:latest
+    depends_on:
+      - web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NOSIA_URL=${NOSIA_URL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-config:/config
+      - caddy-data:/data
+
+  web:
+    image: dilolabs/nosia:latest
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - AI_BASE_URL=${AI_BASE_URL}
+      - AI_API_KEY=${AI_API_KEY}
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - LLM_MODEL=${LLM_MODEL}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL}
+      - LLM_TEMPERATURE=${LLM_TEMPERATURE}
+      - CHUNK_SIZE=${CHUNK_SIZE}
+      - CHUNK_OVERLAP=${CHUNK_OVERLAP}
+      - LLM_NUM_CTX=${LLM_NUM_CTX}
+      - LLM_TOP_K=${LLM_TOP_K}
+      - LLM_TOP_P=${LLM_TOP_P}
+      - RETRIEVAL_FETCH_K=${RETRIEVAL_FETCH_K}
+      - RAG_SYSTEM_TEMPLATE=${RAG_SYSTEM_TEMPLATE}
+    volumes:
+      - rails-storage:/rails/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/up"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      embedding:
+        condition: service_healthy
+      llm:
+        condition: service_healthy
+    restart: on-failure:5
+
+  postgres-db:
+    image: pgvector/pgvector:pg16
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    restart: on-failure:5
+
+  solidq:
+    image: dilolabs/nosia:latest
+    command: bundle exec rake solid_queue:start
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - AI_BASE_URL=${AI_BASE_URL}
+      - AI_API_KEY=${AI_API_KEY}
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - LLM_MODEL=${LLM_MODEL}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL}
+      - LLM_TEMPERATURE=${LLM_TEMPERATURE}
+      - CHUNK_SIZE=${CHUNK_SIZE}
+      - CHUNK_OVERLAP=${CHUNK_OVERLAP}
+      - LLM_NUM_CTX=${LLM_NUM_CTX}
+      - LLM_TOP_K=${LLM_TOP_K}
+      - LLM_TOP_P=${LLM_TOP_P}
+      - RETRIEVAL_FETCH_K=${RETRIEVAL_FETCH_K}
+      - RAG_SYSTEM_TEMPLATE=${RAG_SYSTEM_TEMPLATE}
+    volumes:
+      - rails-storage:/rails/storage
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      embedding:
+        condition: service_healthy
+      llm:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    restart: on-failure:5
+
+  llm:
+    provider:
+      type: model
+      options:
+        model: ${LLM_MODEL}
+
+  embedding:
+    provider:
+      type: model
+      options:
+        model: ${EMBEDDING_MODEL}
+
+volumes:
+  caddy-config:
+  caddy-data:
+  postgres-db-data:
+  rails-storage:
