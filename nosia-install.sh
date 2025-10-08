@@ -1,6 +1,9 @@
 #!/bin/bash -e
 
 pull() {
+  echo "Pulling latest Caddyfile"
+  curl -fsSL https://raw.githubusercontent.com/nosia-ai/nosia-install/main/Caddyfile >Caddyfile
+
   echo "Pulling latest docker-compose.yml"
   curl -fsSL https://raw.githubusercontent.com/nosia-ai/nosia-install/main/docker-compose.yml >docker-compose.yml
 
